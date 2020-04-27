@@ -1,0 +1,118 @@
+﻿@model ProjectTracker.ViewModels.TaskCreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="row">
+    <div class="col-sm-8 float-left">
+        <h5 class="mt-2"> Create New Task</h5>
+    </div>
+</div>
+<hr />
+
+@using (Html.BeginForm("Create", "Task", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+<div aria-labelledby="filterCard" aria-expanded="true">
+
+    <div class="row">
+        <div class="mb-2 align-self-start col"></div>
+        <div class="col-sm-6 mb-2 align-self-center">
+
+            @if (TempData["fail"] != null)
+            {
+                <p class="alert alert-danger"> @TempData["fail"]</p>
+            }
+
+            @Html.HiddenFor(model => model.ProjectId)
+            @Html.HiddenFor(model => model.StatusId)
+
+        <div class="card">
+            <div class="card-header card-header-info">
+                <h4 class="card-title ">Create New Task</h4>
+                <p class="card-category"> Details about the task</p>
+            </div>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="card-body">
+
+                <div class="form-group required">
+                    <label asp-for="ProjectName" class="control-label required"></label>
+                    <select asp-for="ProjectId" class="form-control" disabled="@(true)" asp-items="Model.ProjectName">
+                        @*<option value="">Not set</option>*@
+                    </select>
+                    <span asp-validation-for="ProjectName" class="text-danger"></span>
+                </div>
+                <div class="form-group required">
+                    <label asp-for="Name" class="control-label required"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Description" class="control-label"></label>
+                    <textarea asp-for="Description" class="form-control" rows="3" cols="40"> </textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-group required">
+                    <label class="control-label" for="EffortId">Effort Required</label>
+                    <div>
+                        @Html.DropDownListFor(model => model.EffortId, new SelectList(Model.EffortDesc.Select(x => new { Value = x.Id, Text = x.Name }), "Value", "Text"), "Please Select", htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.EffortId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group required">
+                    <label class="control-label" for="ResourceId">Resource</label>
+                    <div>
+                        @Html.DropDownListFor(model => model.ResourceId, new SelectList(Model.ResourceDesc.Select(x => new { Value = x.Id, Text = x.Name }), "Value", "Text"), "Please Select", htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.ResourceId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group required">
+                    <label class="control-label" for="StatusId">Status</label>
+                    <div>
+                        @Html.DropDownListFor(model => model.StatusId, new SelectList(Model.StatusDesc.Select(x => new { Value = x.Id, Text = x.Name }), "Value", "Text"), "Please Select", htmlAttributes: new { @class = "form-control is-disabled", disabled = "disabled" })
+                        @Html.ValidationMessageFor(model => model.StatusId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                @*<div class="form-group required">
+                <label asp-for="ResourceId" class="control-label"></label>
+                <select asp-for="ResourceId" class="form-control" asp-items="Model.ResourceDesc">
+                    <option value="">Not set</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <div>
+                    <div class="custom-control custom-switch ">
+                        <small>
+                            @Html.CheckBoxFor(model => model.IsActive, new { @class = "custom-control-input", id = "IsActive" })
+                            <label class="custom-control-label" for="IsActive">@Html.DisplayNameFor(model => model.IsActive)</label>
+                        </small>
+                    </div>
+                </div>
+            </div>*@
+
+                <div class="form-group">
+                    <input type="file" name="Files" multiple class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+
+            </div>
+
+        </div>
+        </div>
+
+        <div class="mb-2 align-self-end col"></div>
+    </div>
+    <br />
+</div>
+}
+
+<div>
+    <a asp-action="Index" asp-route-id="@Model.ProjectId" class="btn btn-warning"><i class="fa fa-backward"> Back</i></a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

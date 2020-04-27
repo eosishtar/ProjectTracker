@@ -1,0 +1,57 @@
+﻿@model IEnumerable<ProjectTracker.Entities.Project>
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        <h5 class="mt-2"> Projects</h5>
+        <hr />
+    </div>
+</div>
+
+<div aria-labelledby="filterCard" aria-expanded="true">
+    <div class="row">
+        <div class="mb-2 align-self-start col"></div>
+        <div class="col-sm-12 mb-2 align-self-center">
+
+            @if (TempData["success"] != null)
+            {
+                <p class="alert alert-success"> @TempData["success"]</p>
+            }
+            @if (TempData["fail"] != null)
+            {
+                <p class="alert alert-danger"> @TempData["fail"]</p>
+            }
+
+            <nav class="navbar navbar-light pr-0 justify-content-end">
+                <a asp-action="Create" class="btn btn-outline-primary float-right"><i class="fa fa-plus-square"></i> Create New</a>
+                <div class="input-group justify-content-start">
+                    <form id="/search/search" class="form-inline">
+                        <input class="form-control" id="SearchString" name="search" type="search" style="width:400px" placeholder="Search..." />
+                        <div class="input-group-append">
+                            <button type="submit" value="Search" class="btn btn-primary searchButton">
+                                <i class="fa fa-search" aria-hidden="true"></i>
+                                Search
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </nav>
+
+            <div class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        @{
+                            await Html.RenderPartialAsync("_Projects.cshtml", Model);
+                        }
+                    </div>
+                </div>
+            </div>
+
+            </div>
+            <div class="mb-2 align-self-end col"></div>
+        </div>
+    <br />
+</div>

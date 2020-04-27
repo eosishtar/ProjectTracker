@@ -1,0 +1,117 @@
+﻿@model IEnumerable< ProjectTracker.ViewModels.ResourceListViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        <h5 class="mt-2"> Resources</h5>
+        <hr />
+    </div>
+</div>
+
+<div aria-labelledby="filterCard" aria-expanded="true">
+    <div class="row">
+        <div class="mb-2 align-self-start col"></div>
+        <div class="col-sm-12 mb-2 align-self-center">
+
+            @if (TempData["success"] != null)
+            {
+                <p class="alert alert-success"> @TempData["success"]</p>
+            }
+
+            <nav class="navbar navbar-light pr-0 justify-content-end">
+                <a asp-action="Create" class="btn btn-outline-primary float-right"><i class="fa fa-plus-square"></i> Create New</a>
+            </nav>
+
+            <div class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header card-header-info">
+                                    <h4 class="card-title">Resources</h4>
+                                    <p class="card-category"> Available resources</p>
+                                </div>
+
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead class="text-primary">
+                                                <tr>
+                                                    <th>
+                                                        @Html.DisplayNameFor(model => model.Name)
+                                                    </th>
+                                                    <th>
+                                                        @Html.DisplayNameFor(model => model.Title)
+                                                    </th>
+                                                    <th>
+                                                        @Html.DisplayNameFor(model => model.IsActive)
+                                                    </th>
+                                                    <th></th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in Model)
+                                                {
+                                                <tr>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.Name)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.Title)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.IsActive)
+                                                    </td>
+                                                    <td>
+                                                        <a href="@Url.Action("Update", "Resource", new { id = item.Id})" class="float-right"><i class="fa fa-edit"></i>&nbsp;Edit</a>
+                                                    </td>
+                                                    <td>
+                                                        @if (item.IsActive)
+                                                        {
+                                                            <a href="#" onclick="DeleteResource(@item.Id)"><i class="material-icons">lock_open</i></a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a href="#" onclick="DeleteResource(@item.Id)"><i class="material-icons">lock</i></a>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            </div>
+            <div class="mb-2 align-self-end col"></div>
+        </div>
+    <br />
+</div>
+
+<script>
+    function DeleteResource(id) {
+        $.ajax({
+            url: '@Url.Action("Delete", "Resource")',
+            type: "POST",
+            data: JSON.stringify(id),
+            async: false,
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                location.reload();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR.responseText)
+                console.log(errorThrown)
+            }
+        });
+    }
+</script>

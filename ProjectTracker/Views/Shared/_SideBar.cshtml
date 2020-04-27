@@ -1,0 +1,38 @@
+﻿<!-- Side navigation -->
+<div class="sidebar" data-color="azure" data-background-color="white" data-image="~/images/sidebar-1.jpg">
+    <div class="logo">
+        <a href="#" class="simple-text logo-normal">
+            Project Tracker
+        </a>
+    </div>
+    <div class="sidebar-wrapper">
+        <a href="@Url.Action("Create", "Project")" class="float-right"><i class="fa fa-plus-square"></i></a>
+        <ul class="nav">
+            @{
+                var now = DateTime.Now;
+                foreach (var item in Model)
+                {
+                    if (item.DueDate.AddDays(-7) <= now.Date)
+                    {
+                        <li class="nav-item ">
+                            <a class="nav-link" href="@Url.Action("Index", "Task", new { id = item.Id })">
+                                <i class="material-icons">content_paste</i>
+                                <p>&nbsp;@item.Name<span class="duedateMenu">&nbsp;(DUE)</span></p>
+                            </a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item ">
+                            <a class="nav-link" ref="@Url.Action("Index", "Task", new { id = item.Id })">
+                                <i class="material-icons">content_paste</i>
+                                <p>&nbsp;@item.Name</p>
+                            </a>
+                        </li>
+                    }
+                }
+            }
+
+        </ul>
+    </div>
+</div>

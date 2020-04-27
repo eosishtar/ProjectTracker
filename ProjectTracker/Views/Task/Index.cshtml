@@ -1,0 +1,147 @@
+﻿@using ProjectTracker.Entities
+@model ProjectTracker.ViewModels.TaskViewModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+    <div class="main">
+        <div class="row">
+            <div class="col-sm-12">
+                @if (Model.InProgressTask.Count > 0 || Model.CompletedTask.Count > 0)
+                {
+                    <h5 class="mt-2"> @Model.ProjectName - Tasks  <span class="duedate">  Due: @Model.DueDate?.Date.ToString("dd/MM/yyyy")</span></h5>
+                }
+                else
+                {
+                    <h5 class="mt-2"> @Model.ProjectName - Tasks</h5>
+                }
+
+                <hr />
+                <div class="float-right align-right">
+                    <a asp-action="Index" asp-controller="Home" class="btn btn-warning"><i class="fa fa-backward"></i> Back</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Side navigation -->
+        <div class="sidenav">
+            @{
+                await Html.RenderPartialAsync("../Shared/_SideBar.cshtml", Model.projectLists.ToList());
+            }
+        </div>
+
+
+
+        @if (Model.InProgressTask.Count > 0)
+        {
+            <small>
+                <label class="control-label text-secondary">Current Progress</label>
+            </small>
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow='@Model.CompletedProgress' aria-valuemin="0" aria-valuemax="100" style="width: @(Model.CompletedProgress)%"></div>
+            </div>
+            <br />
+        }
+
+        <div pr-0 justify-content-end">
+            <a asp-action="Create" asp-route-id=@Model.ProjectId class="btn btn-outline-primary float-right"><i class="fa fa-plus-square"></i> Create New</a>
+            <br />
+        </div>
+
+        <div class="row mb-4">
+
+            <div class="col-sm-8">
+
+                @if (TempData["success"] != null)
+                {
+                    <p class="alert alert-success"> @TempData["success"]</p>
+                }
+
+            <div class="card">
+                <div class="card-header card-header-info">
+                    <h4 class="card-title ">Tasks</h4>
+                    <p class="card-category"> Tasks in progress</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <div>
+                            <table class="table table-hover">
+                                <tbody>
+                                    @if (Model != null)
+                                    {
+                                        foreach (var item in Model.InProgressTask)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @if (item.StatusId == (int)StatusId.New)
+                                                    {
+                                                        <i class="fa fa-circle text-success margin-right-10" title="New"> </i>
+                                                    }
+                                                    else
+                                                    {
+                                                        <i class="fa fa-circle text-warning margin-right-10" title="In Progress or Pending"> </i>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Name)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Description)
+                                                </td>
+                                                <td>
+                                                    <a asp-action="Edit" asp-route-id="@item.Id">Details</a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="card">
+                    <div class="card-header card-header-info">
+                        <h4 class="card-title ">Completed Tasks</h4>
+                        <p class="card-category"> Previous tasks</p>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <div>
+                                <table class="table table-hover">
+                                    <tbody>
+                                        @if (Model != null)
+                                        {
+                                            foreach (var item in Model.CompletedTask)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.Name)
+                                                    </td>
+                                                    <td>
+                                                        <a asp-action="Edit" asp-route-id="@item.Id">Details</a>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mb-2 align-self-end col"></div>
+
+        
+</div>

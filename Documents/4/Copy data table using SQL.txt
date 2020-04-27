@@ -1,0 +1,8 @@
+/****** Script for SelectTopNRows command from SSMS  ******/
+SELECT * into [Ecas].[ecas].[ClaimStatusReason_20190729] 
+  FROM [Ecas].[ecas].[ClaimStatusReason] 
+
+  select * into Ecas.Ecas.Claim_20190729
+  from Ecas.Ecas.Claim
+
+  update a set a.ClaimStatusReasonId=1 from Ecas.Ecas.Claim a

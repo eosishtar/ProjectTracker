@@ -1,0 +1,236 @@
+﻿@model ProjectTracker.ViewModels.TaskCreateModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+
+<div class="row">
+    <div class="col-sm-12 float-left">
+        <h5 class="mt-2"> Edit Task <span class="duedate float-right mt-3">Created: @Model.CreatedDate.Date.ToString("dd/MM/yyyy")     |   Last Modified: @Model.ModifiedDate.Date.ToString("dd/MM/yyyy")</span></h5>
+    </div>
+</div>
+<hr />
+
+<div class="float-right align-right">
+    <a asp-action="Index" asp-controller="Task" asp-route-id="@Model.ProjectId" class="btn btn-warning"><i class="fa fa-backward"></i> Back</a>
+</div>
+
+@using (Html.BeginForm("Edit", "Task", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div aria-labelledby="filterCard" aria-expanded="true">
+
+        <div class="row">
+            <div class="mb-2 align-self-start col"></div>
+            @if (TempData["fail"] != null)
+            {
+                <p class="alert alert-danger"> @TempData["fail"]</p>
+            }
+            @if (TempData["success"] != null)
+            {
+                <p class="alert alert-success"> @TempData["success"]</p>
+            }
+
+            @Html.HiddenFor(model => model.ProjectId)
+
+            <div class="col-sm-4 mb-2 ">
+                <div class="card">
+                    <div class="card-header card-header-info">
+                        <h4 class="card-title ">Project Information</h4>
+                        <p class="card-category"> Details about the project</p>
+                    </div>
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="card-body ">
+
+                        <input type="hidden" asp-for="Id" />
+                        <div class="form-group">
+                            <label asp-for="ProjectName" class="control-label"></label>
+                            <select asp-for="ProjectId" class="form-control" disabled="@(true)" asp-items="Model.ProjectName"></select>
+                            <span asp-validation-for="ProjectId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Name" class="control-label"></label>
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Description" class="control-label"></label>
+                            <textarea asp-for="Description" class="form-control" rows="3" cols="40"> </textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                        <div class="form-group required">
+                            <label asp-for="EffortId" class="control-label"></label>
+                            @*@Html.DropDownListFor(x => x.EffortId, (IEnumerable<SelectListItem>)Model.EffortDesc, htmlAttributes: new { @class = "form-control", required = "required" })
+                                @Html.ValidationMessageFor(model => model.EffortId, "", new { @class = "text-danger" })*@
+                            @Html.DropDownListFor(model => model.EffortId, new SelectList(Model.EffortDesc.Select(x => new { Value = x.Id, Text = x.Name }), "Value", "Text"), "Please Select", htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.EffortId, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group required">
+                            <label asp-for="ResourceId" class="control-label"></label>
+                            @*@Html.DropDownListFor(x => x.ResourceId, (IEnumerable<SelectListItem>)Model.ResourceDesc, htmlAttributes: new { @class = "form-control", required = "required" })
+                                @Html.ValidationMessageFor(model => model.ResourceId, "", new { @class = "text-danger" })*@
+                            @Html.DropDownListFor(model => model.ResourceId, new SelectList(Model.ResourceDesc.Select(x => new { Value = x.Id, Text = x.Name }), "Value", "Text"), "Please Select", htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.ResourceId, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group required">
+                            <label asp-for="StatusId" class="control-label"></label>
+                            @*@Html.DropDownListFor(x => x.StatusId, (IEnumerable<SelectListItem>)Model.StatusDesc, htmlAttributes: new { @class = "form-control", required = "required" })
+                                @Html.ValidationMessageFor(model => model.StatusId, "", new { @class = "text-danger" })*@
+                            @Html.DropDownListFor(model => model.StatusId, new SelectList(Model.StatusDesc.Select(x => new { Value = x.Id, Text = x.Name }), "Value", "Text"), "Please Select", htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.StatusId, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="form-group">
+                            <input type="file" name="Files" multiple class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <input type="submit" value="Save" class="btn btn-primary" />
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-7 mb-2">
+                <div class="card">
+                    <div class="card-header card-header-info">
+                        <h4 class="card-title ">Attachments</h4>
+
+                    </div>
+                    <div class="card-body ">
+                        @if (Model.ListFiles.Count() > 0)
+                        {
+                            <table class="table table-hover">
+                                <tbody>
+                                    @foreach (var item in Model.ListFiles)
+                                    {
+                                        <tr>
+                                            <td style="max-width:20px">
+                                                <a href="#" onclick="DeleteAttachment(@item.Id)" class="delete"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.FileName)
+                                            </td>
+                                            <td>
+                                                <a href="#" onclick="DownloadAttachment(@item.TaskId, @item.Id, '@item.FileName')" class="float-right"><i class="fa fa-eye"></i>&nbsp;View</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-2 align-self-end col"></div>
+        </div>
+        <br />
+    </div>
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+<script>
+
+    function ConfirmDialog() {
+        if (window.confirm("Are you sure you want to remove this attachment?")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function DeleteAttachment(id) {
+        if (ConfirmDialog()) {
+            $.ajax({
+                url: '@Url.Action("Delete", "Task")',
+                type: "POST",
+                data: JSON.stringify(id),
+                async: true,
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    location.reload();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR.responseText)
+                    console.log(errorThrown)
+                }
+            });
+        } else {
+            return false;
+        }
+    }
+
+    function DownloadAttachment(taskid, id, filename) {
+        $.ajax({
+            url: '@Url.Action("DownloadFile", "Download")',
+            type: "POST",
+            data: JSON.stringify({ "TaskId": taskid, "ItemId": id, "FileName": filename }),
+            async: false,
+            contentType: "application/json; charset=utf-8",
+            cache: false,
+            success: function (result) {
+
+                var blob = new Blob([result], { type: GetMemeType(filename) });
+
+                var link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = filename;
+                link.click();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR.responseText)
+                console.log(errorThrown)
+            },
+        });
+    }
+
+
+
+</script>
+
+
+
+
+
+
+@*function DownloadAttachment(taskid, id) {
+    $.ajax({
+        url: '@Url.Action("DownloadFile", "Download")',
+        type: "POST",
+        data: JSON.stringify({ "TaskId": taskid, "ItemId": id }),
+        async: true,
+        contentType: "application/json; charset=utf-8",
+        success: function (data) {
+        location.reload();
+
+        if (this.status == 200) {
+        var blob = this.response;
+
+        /* Get filename from Content-Disposition header */
+        var filename = "";
+        var disposition = xhr.getResponseHeader('Content-Disposition');
+        if (disposition && disposition.indexOf('attachment') !== -1) {
+        var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+        var matches = filenameRegex.exec(disposition);
+        if (matches != null && matches[1]) filename = matches[1].replace(/['"]/g, '');
+        }
+
+        // This does the trick
+        var a = document.createElement('a');
+        a.href = window.URL.createObjectURL(blob);
+        a.download = filename;
+        a.dispatchEvent(new MouseEvent('click'));
+        }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR.responseText)
+        console.log(errorThrown)
+        }
+        });
+        }
+        </script>*@
