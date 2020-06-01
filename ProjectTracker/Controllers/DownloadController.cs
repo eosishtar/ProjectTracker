@@ -26,6 +26,7 @@ namespace ProjectTracker.Controllers
             this._fileManager = fileManager;
         }
 
+
         public IActionResult DownloadFile([FromBody]DownloadFileModel model)
         {
             try
@@ -50,7 +51,9 @@ namespace ProjectTracker.Controllers
                     throw new ArgumentException("Invalid file name or file does not exist!");
                 }
 
-                var fileBytes = System.IO.File.ReadAllBytes(filepath);
+                //byte[] fileBytes = System.IO.File.ReadAllBytes(filepath);
+                var fs = new FileStream(filepath, FileMode.Open);
+
 
                 var ext = Path.GetExtension(filepath).ToLowerInvariant();
                 string contentType = _fileManager.GetContentType()[ext];
@@ -59,7 +62,7 @@ namespace ProjectTracker.Controllers
                 Response.Headers.Add("Content-Disposition", "attachment; filename=" + fileDetails.FileName);
 
                 //return File(memory, contentType);
-                return File(fileBytes, contentType ?? "application/octet-stream", fileDetails.FileName);
+                return File(fs, contentType ?? "application/octet-stream", fileDetails.FileName);
             }
             catch (Exception ex)
             {

@@ -4,6 +4,7 @@
 // Write your JavaScript code.
 
 function GetMemeType(filename) {
+
     var ext = filename.split('.').pop();
 
     switch (ext.toLowerCase()) {

@@ -24,7 +24,6 @@ namespace ProjectTracker
 
             if (documents.Count() > 0)
             {
-
                 foreach (IFormFile item in documents)
                 {
                     if (item.Length > 0)
@@ -40,6 +39,7 @@ namespace ProjectTracker
                             //save file to location
                             await item.CopyToAsync(stream);
                         }
+
                         result.Add(fullPath);
                     }
                 }
@@ -100,10 +100,7 @@ namespace ProjectTracker
             {
                 File.Delete(path);
             }
-                
         }
-
-
     }
 
 }

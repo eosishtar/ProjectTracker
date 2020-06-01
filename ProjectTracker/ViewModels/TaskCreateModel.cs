@@ -52,7 +52,7 @@ namespace ProjectTracker.ViewModels
         public List<LookUp.LookUpDetail> ResourceDesc { get; set; }
 
         [Display(Name = "Browse File")]
-        public List<IFormFile> Files { get; set; }          //uploaded files go here
+        public List<IFormFile> Files { get; set; }              //uploaded files go here
 
         public List<Documents> ListFiles { get; set; }         //already uploaded files gets populated here
 
@@ -64,7 +64,6 @@ namespace ProjectTracker.ViewModels
 
         public TaskCreateModel MapToEntity (Task model)
         {
-
             var viewModel = new TaskCreateModel()
             {
                 Id = model.Id,
@@ -80,9 +79,6 @@ namespace ProjectTracker.ViewModels
 
             return viewModel;
         }
-
-
-
 
     }
 }
