@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProjectTracker.Entities;
 using ProjectTracker.Interfaces;
+using ProjectTracker.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,11 +14,13 @@ namespace ProjectTracker.Interactors
     {
         private readonly PTContext _db;
         private readonly FileUploadManager _fileManager;
+        private readonly IEmailInteractor _emailServer;
 
-        public TaskInteractor(PTContext db, FileUploadManager fileManager)
+        public TaskInteractor(PTContext db, FileUploadManager fileManager, IEmailInteractor emailInteractor)
         {
             this._db = db;
             this._fileManager = fileManager;
+            this._emailServer = emailInteractor;
         }
 
         public List<TaskPT> GetProjectTasks(int? projectId)
@@ -73,6 +76,18 @@ namespace ProjectTracker.Interactors
                     _db.Documents.UpdateRange(task.Documents);
                 }
                 _db.SaveChanges();
+
+                //the resource has changed, notify them
+                if (result.ResourceId != task.ResourceId)
+                {
+                    var email = new EmailModel()
+                    {
+                        ToEmails = new string[] { "mlang1986@gmail.com" },
+                        Message = "You have been assigned a new task"
+                    };
+
+                    _emailServer.SendEmail(email);
+                }
 
                 return (true, null);
             }

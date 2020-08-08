@@ -51,8 +51,10 @@ namespace ProjectTracker.Controllers
                     throw new ArgumentException("Invalid file name or file does not exist!");
                 }
 
-                //byte[] fileBytes = System.IO.File.ReadAllBytes(filepath);
+                byte[] fileBytes = System.IO.File.ReadAllBytes(filepath);
                 var fs = new FileStream(filepath, FileMode.Open);
+                var ms = new MemoryStream();
+                ms.CopyTo(fs);
 
 
                 var ext = Path.GetExtension(filepath).ToLowerInvariant();
@@ -62,7 +64,8 @@ namespace ProjectTracker.Controllers
                 Response.Headers.Add("Content-Disposition", "attachment; filename=" + fileDetails.FileName);
 
                 //return File(memory, contentType);
-                return File(fs, contentType ?? "application/octet-stream", fileDetails.FileName);
+                //return File(fileBytes, "application/force-download", fileDetails.FileName);
+                return PhysicalFile(filepath, "application/force-download", fileDetails.FileName);
             }
             catch (Exception ex)
             {

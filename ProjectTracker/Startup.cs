@@ -40,6 +40,7 @@ namespace ProjectTracker
             });
 
             services.AddMemoryCache();
+            services.AddLogging();
 
             //DBContext
             services.AddDbContext<PTContext>(options =>
@@ -51,6 +52,7 @@ namespace ProjectTracker
             services.AddScoped<IEffortInteractor, EffortInteractor>();
             services.AddScoped<IResourceInteractor, ResourceInteractor>();
             services.AddScoped<ILookUpInteractor, LookUpInteractor>();
+            services.AddScoped<IEmailInteractor, EmailInteractor>();
             services.AddScoped<FileUploadManager>();
             services.AddScoped<CacheManager>();
 

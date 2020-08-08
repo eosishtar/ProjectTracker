@@ -61,176 +61,200 @@
                         <div class="form-group required">
                             <label asp-for="EffortId" class="control-label"></label>
                             @*@Html.DropDownListFor(x => x.EffortId, (IEnumerable<SelectListItem>)Model.EffortDesc, htmlAttributes: new { @class = "form-control", required = "required" })
-                                @Html.ValidationMessageFor(model => model.EffortId, "", new { @class = "text-danger" })*@
+            @Html.ValidationMessageFor(model => model.EffortId, "", new { @class = "text-danger" })*@
                             @Html.DropDownListFor(model => model.EffortId, new SelectList(Model.EffortDesc.Select(x => new { Value = x.Id, Text = x.Name }), "Value", "Text"), "Please Select", htmlAttributes: new { @class = "form-control" })
                             @Html.ValidationMessageFor(model => model.EffortId, "", new { @class = "text-danger" })
                         </div>
                         <div class="form-group required">
                             <label asp-for="ResourceId" class="control-label"></label>
                             @*@Html.DropDownListFor(x => x.ResourceId, (IEnumerable<SelectListItem>)Model.ResourceDesc, htmlAttributes: new { @class = "form-control", required = "required" })
-                                @Html.ValidationMessageFor(model => model.ResourceId, "", new { @class = "text-danger" })*@
+            @Html.ValidationMessageFor(model => model.ResourceId, "", new { @class = "text-danger" })*@
                             @Html.DropDownListFor(model => model.ResourceId, new SelectList(Model.ResourceDesc.Select(x => new { Value = x.Id, Text = x.Name }), "Value", "Text"), "Please Select", htmlAttributes: new { @class = "form-control" })
                             @Html.ValidationMessageFor(model => model.ResourceId, "", new { @class = "text-danger" })
                         </div>
                         <div class="form-group required">
                             <label asp-for="StatusId" class="control-label"></label>
                             @*@Html.DropDownListFor(x => x.StatusId, (IEnumerable<SelectListItem>)Model.StatusDesc, htmlAttributes: new { @class = "form-control", required = "required" })
-                                @Html.ValidationMessageFor(model => model.StatusId, "", new { @class = "text-danger" })*@
+            @Html.ValidationMessageFor(model => model.StatusId, "", new { @class = "text-danger" })*@
                             @Html.DropDownListFor(model => model.StatusId, new SelectList(Model.StatusDesc.Select(x => new { Value = x.Id, Text = x.Name }), "Value", "Text"), "Please Select", htmlAttributes: new { @class = "form-control" })
                             @Html.ValidationMessageFor(model => model.StatusId, "", new { @class = "text-danger" })
                         </div>
 
-                        <div class="form-group">
-                            <input type="file" name="Files" class="form-control" multiple/>
-                        </div>
+                        @*https://www.youtube.com/watch?v=aoxEJii70_I
+                          file upload   
+                        *@
+                                <div class="form-group">
+                                    <label asp-for="Files" class="control-label"></label>
+                                    <div class="custom-file">
+                                        <input id="inputGroup" type="file" name="Files" class="form-control custom-file-input" multiple />
+                                        <label class="custom-file-label" for="inputGroup" >Choose File...</label>
+                                    </div>
+                                </div>
 
-                        <div class="form-group">
-                            <input type="submit" value="Save" class="btn btn-primary" />
-                        </div>
+                                <div class="form-group">
+                                    <input type="submit" value="Save" class="btn btn-primary" />
+                                </div>
 
+                            </div>
+                        </div>
                     </div>
+
+                    <div class="col-sm-7 mb-2">
+                        <div class="card">
+                            <div class="card-header card-header-info">
+                                <h4 class="card-title ">Attachments</h4>
+
+                            </div>
+                            <div class="card-body ">
+                                @if (Model.ListFiles.Count() > 0)
+                                {
+                                    <table class="table table-hover">
+                                        <tbody>
+                                            @foreach (var item in Model.ListFiles)
+                                            {
+                                                <tr>
+                                                    <td style="max-width:20px">
+                                                        <a href="#" onclick="DeleteAttachment(@item.Id)" class="delete"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.FileName)
+                                                    </td>
+                                                    <td>
+                                                        <a href="#" onclick="DownloadAttachment(@item.TaskId, @item.Id, '@item.FileName')" class="float-right"><i class="fa fa-eye"></i>&nbsp;View</a>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-2 align-self-end col"></div>
                 </div>
+                <br />
             </div>
 
-            <div class="col-sm-7 mb-2">
-                <div class="card">
-                    <div class="card-header card-header-info">
-                        <h4 class="card-title ">Attachments</h4>
+            @section Scripts {
 
-                    </div>
-                    <div class="card-body ">
-                        @if (Model.ListFiles.Count() > 0)
-                        {
-                            <table class="table table-hover">
-                                <tbody>
-                                    @foreach (var item in Model.ListFiles)
-                                    {
-                                        <tr>
-                                            <td style="max-width:20px">
-                                                <a href="#" onclick="DeleteAttachment(@item.Id)" class="delete"><i class="fa fa-trash" aria-hidden="true"></i></a>
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.FileName)
-                                            </td>
-                                            <td>
-                                                <a href="#" onclick="DownloadAttachment(@item.TaskId, @item.Id, '@item.FileName')" class="float-right"><i class="fa fa-eye"></i>&nbsp;View</a>
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        }
-                    </div>
-                </div>
-            </div>
+                @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
-            <div class="mb-2 align-self-end col"></div>
-        </div>
-        <br />
-    </div>
-}
+                <script>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+                    $(document).ready(function () {
+                        $('#inputGroup').on('change', function () {
+                            //get the selected file name
+                            var fileName = $(this).val().split("\\").pop();
+                            //replace the choose label woth the selected file name
+                            $(this).next('.custom-file-label').html(fileName);
+                        });
+                    });
 
-<script>
+                </script>
+            }
 
-    function ConfirmDialog() {
-        if (window.confirm("Are you sure you want to remove this attachment?")) {
-            return true;
-        } else {
-            return false;
         }
-    }
 
-    function DeleteAttachment(id) {
-        if (ConfirmDialog()) {
+        <script>
+
+
+
+            function ConfirmDialog() {
+                if (window.confirm("Are you sure you want to remove this attachment?")) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+            function DeleteAttachment(id) {
+                if (ConfirmDialog()) {
+                    $.ajax({
+                        url: '@Url.Action("Delete", "Task")',
+                        type: "POST",
+                        data: JSON.stringify(id),
+                        async: true,
+                        contentType: "application/json; charset=utf-8",
+                        success: function (data) {
+                            location.reload();
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            console.log(jqXHR.responseText)
+                            console.log(errorThrown)
+                        }
+                    });
+                } else {
+                    return false;
+                }
+            }
+
+            function DownloadAttachment(taskid, id, filename) {
+                $.ajax({
+                    url: '@Url.Action("DownloadFile", "Download")',
+                    type: "POST",
+                    data: JSON.stringify({ "TaskId": taskid, "ItemId": id, "FileName": filename }),
+                    async: false,
+                    contentType: "application/json; charset=utf-8",
+                    cache: false,
+                    success: function (result, status, xhr) {
+
+                        var blob = new Blob([result], { type: GetMemeType(filename) });
+
+                        var link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = filename;
+                        link.click();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.log(jqXHR.responseText)
+                        console.log(errorThrown)
+                    },
+                });
+            }
+
+
+
+        </script>
+
+
+
+
+
+
+        @*function DownloadAttachment(taskid, id) {
             $.ajax({
-                url: '@Url.Action("Delete", "Task")',
+                url: '@Url.Action("DownloadFile", "Download")',
                 type: "POST",
-                data: JSON.stringify(id),
+                data: JSON.stringify({ "TaskId": taskid, "ItemId": id }),
                 async: true,
                 contentType: "application/json; charset=utf-8",
                 success: function (data) {
-                    location.reload();
+                location.reload();
+
+                if (this.status == 200) {
+                var blob = this.response;
+
+                /* Get filename from Content-Disposition header */
+                var filename = "";
+                var disposition = xhr.getResponseHeader('Content-Disposition');
+                if (disposition && disposition.indexOf('attachment') !== -1) {
+                var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                var matches = filenameRegex.exec(disposition);
+                if (matches != null && matches[1]) filename = matches[1].replace(/['"]/g, '');
+                }
+
+                // This does the trick
+                var a = document.createElement('a');
+                a.href = window.URL.createObjectURL(blob);
+                a.download = filename;
+                a.dispatchEvent(new MouseEvent('click'));
+                }
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
-                    console.log(jqXHR.responseText)
-                    console.log(errorThrown)
-                }
-            });
-        } else {
-            return false;
-        }
-    }
-
-    function DownloadAttachment(taskid, id, filename) {
-        $.ajax({
-            url: '@Url.Action("DownloadFile", "Download")',
-            type: "POST",
-            data: JSON.stringify({ "TaskId": taskid, "ItemId": id, "FileName": filename }),
-            async: false,
-            contentType: "application/json; charset=utf-8",
-            cache: false,
-            success: function (result, status, xhr) {
-
-                var blob = new Blob([result], { type: GetMemeType(filename) });
-
-                var link = document.createElement('a');
-                link.href = window.URL.createObjectURL(blob);
-                link.download = filename;
-                link.click();
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
                 console.log(jqXHR.responseText)
                 console.log(errorThrown)
-            },
-        });
-    }
-
-
-
-</script>
-
-
-
-
-
-
-@*function DownloadAttachment(taskid, id) {
-    $.ajax({
-        url: '@Url.Action("DownloadFile", "Download")',
-        type: "POST",
-        data: JSON.stringify({ "TaskId": taskid, "ItemId": id }),
-        async: true,
-        contentType: "application/json; charset=utf-8",
-        success: function (data) {
-        location.reload();
-
-        if (this.status == 200) {
-        var blob = this.response;
-
-        /* Get filename from Content-Disposition header */
-        var filename = "";
-        var disposition = xhr.getResponseHeader('Content-Disposition');
-        if (disposition && disposition.indexOf('attachment') !== -1) {
-        var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-        var matches = filenameRegex.exec(disposition);
-        if (matches != null && matches[1]) filename = matches[1].replace(/['"]/g, '');
-        }
-
-        // This does the trick
-        var a = document.createElement('a');
-        a.href = window.URL.createObjectURL(blob);
-        a.download = filename;
-        a.dispatchEvent(new MouseEvent('click'));
-        }
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-        console.log(jqXHR.responseText)
-        console.log(errorThrown)
-        }
-        });
-        }
-        </script>*@
+                }
+                });
+                }
+                </script>*@
